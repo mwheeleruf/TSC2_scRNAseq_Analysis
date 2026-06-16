@@ -48,4 +48,5 @@ The workflow writes merged and integrated Seurat objects, marker tables, group
 differential expression results, and UMAP/feature plot PDFs into the selected
 output directory. If you want cell-type labels instead of the default
 `Cluster_<id>` names, pass a named `cluster_names` vector after you inspect the
-identified cluster IDs.
+identified cluster IDs. If you need a specific differential expression
+direction, pass `ident_1` and `ident_2` to control the group comparison order.

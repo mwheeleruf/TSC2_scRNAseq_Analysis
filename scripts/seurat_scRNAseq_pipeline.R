@@ -215,15 +215,25 @@ find_feature_markers <- function(integrated_object,
 run_group_differential_expression <- function(integrated_object,
                                               groups,
                                               group_column = "group",
+                                              ident_1 = NULL,
+                                              ident_2 = NULL,
                                               min_pct = 0.1,
                                               logfc_threshold = 0.25) {
-  group_levels <- sort(unique(as.character(groups)))
+  group_levels <- unique(as.character(groups))
+
+  if (is.null(ident_1)) {
+    ident_1 <- group_levels[[1]]
+  }
+
+  if (is.null(ident_2)) {
+    ident_2 <- group_levels[[2]]
+  }
 
   Seurat::FindMarkers(
     object = integrated_object,
     group.by = group_column,
-    ident.1 = group_levels[[1]],
-    ident.2 = group_levels[[2]],
+    ident.1 = ident_1,
+    ident.2 = ident_2,
     min.pct = min_pct,
     logfc.threshold = logfc_threshold
   )
@@ -280,6 +290,13 @@ save_pipeline_outputs <- function(merged_object,
                                   differential_expression,
                                   output_dir,
                                   feature_genes = character()) {
+  differential_expression_output <- data.frame(
+    gene = rownames(differential_expression),
+    differential_expression,
+    row.names = NULL,
+    check.names = FALSE
+  )
+
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
   saveRDS(merged_object, file = file.path(output_dir, "merged_seurat_object.rds"))
@@ -287,9 +304,9 @@ save_pipeline_outputs <- function(merged_object,
 
   utils::write.csv(cluster_markers, file = file.path(output_dir, "cluster_feature_markers.csv"), row.names = FALSE)
   utils::write.csv(
-    differential_expression,
+    differential_expression_output,
     file = file.path(output_dir, "group_differential_expression.csv"),
-    row.names = TRUE
+    row.names = FALSE
   )
 
   save_umap_plots(integrated_object, output_dir)
@@ -304,6 +321,8 @@ run_seurat_scRNAseq_pipeline <- function(sample_paths,
                                          normalization_method = c("LogNormalize", "SCT"),
                                          dims = 1:30,
                                          resolution = 0.5,
+                                         ident_1 = NULL,
+                                         ident_2 = NULL,
                                          project_name = "scRNAseq_analysis",
                                          output_dir = "results/seurat_pipeline") {
   assert_seurat_available()
@@ -345,7 +364,12 @@ run_seurat_scRNAseq_pipeline <- function(sample_paths,
 
   integrated_object <- prepare_rna_assay(integrated_object)
   cluster_markers <- find_feature_markers(integrated_object)
-  differential_expression <- run_group_differential_expression(integrated_object, groups = groups)
+  differential_expression <- run_group_differential_expression(
+    integrated_object,
+    groups = groups,
+    ident_1 = ident_1,
+    ident_2 = ident_2
+  )
 
   save_pipeline_outputs(
     merged_object = merged_object,
