@@ -346,7 +346,3 @@ run_seurat_scrnaseq_pipeline <- function(sample_paths,
     differential_expression = differential_expression
   )
 }
-
-run_tsc2_scrnaseq_pipeline <- function(...) {
-  run_seurat_scrnaseq_pipeline(...)
-}
