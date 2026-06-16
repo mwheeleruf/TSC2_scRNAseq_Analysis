@@ -171,7 +171,7 @@ assign_cluster_names <- function(integrated_object, cluster_names = NULL) {
   }
 
   if (is.null(names(cluster_names)) || any(names(cluster_names) == "")) {
-    stop("cluster_names must be a named character vector keyed by cluster id.", call. = FALSE)
+    stop("cluster_names must be a named character vector keyed by cluster IDs.", call. = FALSE)
   }
 
   missing_clusters <- setdiff(cluster_ids, names(cluster_names))

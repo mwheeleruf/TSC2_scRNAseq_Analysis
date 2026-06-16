@@ -1,6 +1,6 @@
 # TSC2_scRNAseq_Analysis
 
-Code for analyzing scRNAseq data from the TSC2 project.
+Code for analyzing scRNA-seq data from the TSC2 project.
 
 ## Seurat workflow
 
@@ -49,4 +49,6 @@ differential expression results, and UMAP/feature plot PDFs into the selected
 output directory. If you want cell-type labels instead of the default
 `Cluster_<id>` names, pass a named `cluster_names` vector after you inspect the
 identified cluster IDs. If you need a specific differential expression
-direction, pass `ident_1` and `ident_2` to control the group comparison order.
+direction, pass `ident_1` and `ident_2` to control the group comparison order;
+otherwise the workflow compares the first group label appearing in `groups`
+against the second.
