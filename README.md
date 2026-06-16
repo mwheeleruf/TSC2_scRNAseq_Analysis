@@ -33,7 +33,7 @@ sample_paths <- c(
 sample_names <- c("sample_1", "sample_2", "sample_3", "sample_4", "sample_5", "sample_6")
 groups <- c("group_a", "group_a", "group_a", "group_b", "group_b", "group_b")
 
-results <- run_tsc2_scrnaseq_pipeline(
+results <- run_seurat_scrnaseq_pipeline(
   sample_paths = sample_paths,
   sample_names = sample_names,
   groups = groups,

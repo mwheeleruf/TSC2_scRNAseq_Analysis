@@ -67,7 +67,7 @@ create_sample_object <- function(sample_path,
   sample_object
 }
 
-merge_sample_objects <- function(sample_objects, sample_names, project_name = "TSC2_scRNAseq") {
+merge_sample_objects <- function(sample_objects, sample_names, project_name = "scRNAseq_analysis") {
   Seurat::merge(
     x = sample_objects[[1]],
     y = sample_objects[-1],
@@ -269,22 +269,26 @@ save_pipeline_outputs <- function(merged_object,
   saveRDS(integrated_object, file = file.path(output_dir, "integrated_seurat_object.rds"))
 
   utils::write.csv(cluster_markers, file = file.path(output_dir, "cluster_feature_markers.csv"), row.names = FALSE)
-  utils::write.csv(differential_expression, file = file.path(output_dir, "group_differential_expression.csv"))
+  utils::write.csv(
+    differential_expression,
+    file = file.path(output_dir, "group_differential_expression.csv"),
+    row.names = TRUE
+  )
 
   save_umap_plots(integrated_object, output_dir)
   save_feature_plots(integrated_object, feature_genes, output_dir)
 }
 
-run_tsc2_scrnaseq_pipeline <- function(sample_paths,
-                                       sample_names,
-                                       groups,
-                                       cluster_names = NULL,
-                                       feature_genes = character(),
-                                       normalization_method = c("LogNormalize", "SCT"),
-                                       dims = 1:30,
-                                       resolution = 0.5,
-                                       project_name = "TSC2_scRNAseq",
-                                       output_dir = "results/seurat_pipeline") {
+run_seurat_scrnaseq_pipeline <- function(sample_paths,
+                                         sample_names,
+                                         groups,
+                                         cluster_names = NULL,
+                                         feature_genes = character(),
+                                         normalization_method = c("LogNormalize", "SCT"),
+                                         dims = 1:30,
+                                         resolution = 0.5,
+                                         project_name = "scRNAseq_analysis",
+                                         output_dir = "results/seurat_pipeline") {
   assert_seurat_available()
   validate_pipeline_inputs(sample_paths, sample_names, groups)
 
@@ -341,4 +345,8 @@ run_tsc2_scrnaseq_pipeline <- function(sample_paths,
     cluster_markers = cluster_markers,
     differential_expression = differential_expression
   )
+}
+
+run_tsc2_scrnaseq_pipeline <- function(...) {
+  run_seurat_scrnaseq_pipeline(...)
 }
