@@ -5,7 +5,7 @@ Code for analyzing scRNAseq data from the TSC2 project.
 ## Seurat workflow
 
 The repository now includes a Seurat-based R workflow at
-`/home/runner/work/TSC2_scRNAseq_Analysis/TSC2_scRNAseq_Analysis/scripts/seurat_scRNAseq_pipeline.R`
+`scripts/seurat_scRNAseq_pipeline.R`
 for combining 6 samples across 2 groups and running:
 
 - sample loading and merge
@@ -19,7 +19,7 @@ for combining 6 samples across 2 groups and running:
 ### Example usage
 
 ```r
-source("/home/runner/work/TSC2_scRNAseq_Analysis/TSC2_scRNAseq_Analysis/scripts/seurat_scRNAseq_pipeline.R")
+source("scripts/seurat_scRNAseq_pipeline.R")
 
 sample_paths <- c(
   "/path/to/sample_1",
@@ -39,6 +39,7 @@ results <- run_tsc2_scrnaseq_pipeline(
   groups = groups,
   feature_genes = c("EPCAM", "COL1A1"),
   normalization_method = "LogNormalize",
+  project_name = "TSC2_scRNAseq",
   output_dir = "results/seurat_pipeline"
 )
 ```

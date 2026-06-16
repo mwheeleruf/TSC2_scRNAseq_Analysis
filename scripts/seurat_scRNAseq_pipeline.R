@@ -67,12 +67,12 @@ create_sample_object <- function(sample_path,
   sample_object
 }
 
-merge_sample_objects <- function(sample_objects, sample_names) {
+merge_sample_objects <- function(sample_objects, sample_names, project_name = "TSC2_scRNAseq") {
   Seurat::merge(
     x = sample_objects[[1]],
     y = sample_objects[-1],
     add.cell.ids = sample_names,
-    project = "TSC2_scRNAseq"
+    project = project_name
   )
 }
 
@@ -283,6 +283,7 @@ run_tsc2_scrnaseq_pipeline <- function(sample_paths,
                                        normalization_method = c("LogNormalize", "SCT"),
                                        dims = 1:30,
                                        resolution = 0.5,
+                                       project_name = "TSC2_scRNAseq",
                                        output_dir = "results/seurat_pipeline") {
   assert_seurat_available()
   validate_pipeline_inputs(sample_paths, sample_names, groups)
@@ -296,7 +297,11 @@ run_tsc2_scrnaseq_pipeline <- function(sample_paths,
     group = groups
   )
 
-  merged_object <- merge_sample_objects(sample_objects, sample_names)
+  merged_object <- merge_sample_objects(
+    sample_objects = sample_objects,
+    sample_names = sample_names,
+    project_name = project_name
+  )
 
   split_objects <- Seurat::SplitObject(merged_object, split.by = "sample_id")
   integrated_object <- integrate_sample_objects(
