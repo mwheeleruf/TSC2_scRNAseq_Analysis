@@ -222,11 +222,11 @@ run_group_differential_expression <- function(integrated_object,
   group_levels <- unique(as.character(groups))
 
   if (is.null(ident_1)) {
-    ident_1 <- group_levels[[1]]
+    ident_1 <- group_levels[1]
   }
 
   if (is.null(ident_2)) {
-    ident_2 <- group_levels[[2]]
+    ident_2 <- group_levels[2]
   }
 
   Seurat::FindMarkers(
