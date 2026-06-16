@@ -217,7 +217,7 @@ run_group_differential_expression <- function(integrated_object,
                                               group_column = "group",
                                               min_pct = 0.1,
                                               logfc_threshold = 0.25) {
-  group_levels <- unique(groups)
+  group_levels <- sort(unique(as.character(groups)))
 
   Seurat::FindMarkers(
     object = integrated_object,
@@ -247,10 +247,27 @@ save_feature_plots <- function(integrated_object, feature_genes, output_dir) {
     return(invisible(NULL))
   }
 
+  available_features <- feature_genes[feature_genes %in% rownames(integrated_object)]
+  missing_features <- setdiff(feature_genes, available_features)
+
+  if (length(missing_features) > 0) {
+    warning(
+      sprintf(
+        "Skipping feature plots for genes not present in the object: %s",
+        paste(missing_features, collapse = ", ")
+      ),
+      call. = FALSE
+    )
+  }
+
+  if (length(available_features) == 0) {
+    return(invisible(NULL))
+  }
+
   feature_plot_path <- file.path(output_dir, "feature_plots.pdf")
   grDevices::pdf(feature_plot_path, width = 10, height = 8)
 
-  for (feature_gene in feature_genes) {
+  for (feature_gene in available_features) {
     print(Seurat::FeaturePlot(integrated_object, features = feature_gene))
   }
 
@@ -279,7 +296,7 @@ save_pipeline_outputs <- function(merged_object,
   save_feature_plots(integrated_object, feature_genes, output_dir)
 }
 
-run_seurat_scrnaseq_pipeline <- function(sample_paths,
+run_seurat_scRNAseq_pipeline <- function(sample_paths,
                                          sample_names,
                                          groups,
                                          cluster_names = NULL,
